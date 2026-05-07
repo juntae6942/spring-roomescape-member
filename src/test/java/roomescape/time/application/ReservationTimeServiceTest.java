@@ -43,14 +43,19 @@ class ReservationTimeServiceTest {
                 .build();
         ThemeResponse themeResponse = themeService.addTheme(ThemeRequest.toEntity(theme));
         ReservationTime time = timeService.addReservationTime(ReservationTimeRequest.toEntity(new ReservationTimeRequest(LocalTime.now())));
-        timeService.addReservationTime(ReservationTimeRequest.toEntity(new ReservationTimeRequest(LocalTime.now().plusHours(1))));
-        timeService.addReservationTime(ReservationTimeRequest.toEntity(new ReservationTimeRequest(LocalTime.now().plusHours(2))));
-        reservationService.addReservation(new ReservationCreateCommand("포비", LocalDate.now(), time.getId(), themeResponse.id()));
+        timeService.addReservationTime(
+                ReservationTimeRequest.toEntity(new ReservationTimeRequest(LocalTime.now().plusHours(1)))
+        );
+        timeService.addReservationTime(
+                ReservationTimeRequest.toEntity(new ReservationTimeRequest(LocalTime.now().plusHours(2)))
+        );
+        reservationService.addReservation(
+                new ReservationCreateCommand("포비", LocalDate.now(), time.getId(), themeResponse.id())
+        );
         AvailableReservationTimeRequest availableReservationTimeRequest = new AvailableReservationTimeRequest(
-                themeResponse.id(), LocalDate.now());
-        Assertions.assertThat(reservationTimeService.getAvailableReservationTime(availableReservationTimeRequest.toCommand())
-                .times()
-                .size()
-        ).isEqualTo(2);
+                themeResponse.id(), LocalDate.now()
+        );
+        Assertions.assertThat(reservationTimeService.getAvailableReservationTime(availableReservationTimeRequest.toCommand()).times())
+                .hasSize(2);
     }
 }
