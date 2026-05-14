@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.reservation.domain.ReservationRepository;
 import roomescape.theme.application.dto.ThemeCommand;
+import roomescape.theme.application.dto.ThemeInfo;
 import roomescape.theme.application.exception.DuplicateThemeException;
 import roomescape.theme.application.exception.ThemeInUseException;
 import roomescape.theme.domain.exception.ThemeNotFoundException;
@@ -28,11 +29,11 @@ public class ThemeService {
     private final ThemeRepository themeRepository;
     private final ReservationRepository reservationRepository;
 
-    public Theme addTheme(ThemeCommand theme) {
+    public ThemeInfo addTheme(ThemeCommand theme) {
         if (themeRepository.existsByName(theme.name())) {
             throw new DuplicateThemeException("이미 존재하는 테마입니다.");
         }
-        return themeRepository.save(theme.toEntity());
+        return ThemeInfo.from(themeRepository.save(theme.toEntity()));
     }
 
     public void deleteTheme(Long id) {
@@ -45,16 +46,21 @@ public class ThemeService {
     }
 
     @Transactional(readOnly = true)
-    public List<Theme> getThemes() {
-        return themeRepository.findAll();
+    public List<ThemeInfo> getThemes() {
+        return themeRepository.findAll()
+                .stream()
+                .map(ThemeInfo::from)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<Theme> getWeeksTopThemes() {
+    public List<ThemeInfo> getWeeksTopThemes() {
         return themeRepository.findByReservationCountWithLimit(
                 LocalDate.now(clock).minusWeeks(WEEKS_BOUND),
                 LocalDate.now(clock).minusDays(DAYS_BOUND),
                 THEME_SIZE_LIMIT
-        );
+        ).stream()
+        .map(ThemeInfo::from)
+        .toList();
     }
 }

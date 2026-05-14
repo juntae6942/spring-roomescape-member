@@ -11,16 +11,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.config.TestTimeConfig;
+import roomescape.reservation.application.dto.ReservationChangeCommand;
 import roomescape.reservation.application.dto.ReservationCreateCommand;
+import roomescape.reservation.application.dto.ReservationInfo;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.application.exception.ReservationInUseException;
 import roomescape.theme.application.ThemeService;
 import roomescape.theme.application.dto.ThemeCommand;
-import roomescape.theme.domain.Theme;
+import roomescape.theme.application.dto.ThemeInfo;
 import roomescape.time.application.ReservationTimeService;
 import roomescape.time.application.dto.ReservationTimeCommand;
 import roomescape.time.application.dto.ReservationTimeInfo;
-import roomescape.time.domain.ReservationTime;
 
 @Transactional
 @SpringBootTest
@@ -46,33 +47,33 @@ class ReservationServiceTest {
                 .startAt(LocalTime.now(clock))
                 .build()
         );
-        Theme theme = themeService.addTheme(ThemeCommand.builder()
+        ThemeInfo theme = themeService.addTheme(ThemeCommand.builder()
                 .name("포비")
                 .durationTime(LocalTime.now(clock))
                 .thumbnailImageUrl("https://~~~")
                 .description("포비가 나와요")
                 .build()
         );
-        Reservation reservation = reservationService.addReservation(ReservationCreateCommand.builder()
+        ReservationInfo reservation = reservationService.addReservation(ReservationCreateCommand.builder()
                 .name("리사")
                 .date(LocalDate.now(clock))
                 .timeId(time.id())
-                .themeId(theme.getId())
+                .themeId(theme.id())
                 .build()
         );
         Assertions.assertThatThrownBy(() -> reservationService.addReservation(ReservationCreateCommand.builder()
                         .name("워니")
                         .date(LocalDate.now(clock))
                         .timeId(time.id())
-                        .themeId(theme.getId())
+                        .themeId(theme.id())
                 .build()
         )).isInstanceOf(ReservationInUseException.class);
-        reservationService.cancelReservation(reservation.getId(), reservation.getName());
+        reservationService.cancelReservation(reservation.id(), reservation.name());
         Assertions.assertThatCode(() -> reservationService.addReservation(ReservationCreateCommand.builder()
                 .name("워니")
                 .date(LocalDate.now(clock))
                 .timeId(time.id())
-                .themeId(theme.getId())
+                .themeId(theme.id())
                 .build()
         )).doesNotThrowAnyException();
     }
@@ -84,22 +85,27 @@ class ReservationServiceTest {
                 .startAt(LocalTime.now(clock))
                 .build()
         );
-        Theme theme = themeService.addTheme(ThemeCommand.builder()
+        ThemeInfo theme = themeService.addTheme(ThemeCommand.builder()
                 .name("포비")
                 .durationTime(LocalTime.now(clock))
                 .thumbnailImageUrl("https://~~~")
                 .description("포비가 나와요")
                 .build()
         );
-        Reservation reservation = reservationService.addReservation(ReservationCreateCommand.builder()
+        ReservationInfo reservation = reservationService.addReservation(ReservationCreateCommand.builder()
                 .name("리사")
                 .date(LocalDate.now(clock))
                 .timeId(time.id())
-                .themeId(theme.getId())
+                .themeId(theme.id())
                 .build()
         );
-        Assertions.assertThatCode(() -> reservation.changeTime(
-                reservation.getDate(), reservation.getTime(), reservation.getTheme()))
+        ReservationChangeCommand changeCommand = ReservationChangeCommand.builder()
+                .username(reservation.name())
+                .date(reservation.date())
+                .timeId(reservation.time().id())
+                .themeId(reservation.theme().id()).build();
+
+        Assertions.assertThatCode(() -> reservationService.changeReservation(reservation.id(), changeCommand))
                 .doesNotThrowAnyException();
     }
 }

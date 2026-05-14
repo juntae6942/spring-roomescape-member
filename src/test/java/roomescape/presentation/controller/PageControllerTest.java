@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -19,12 +18,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import roomescape.config.TestTimeConfig;
 import roomescape.presentation.PageController;
 import roomescape.reservation.application.ReservationService;
-import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.application.dto.ReservationInfo;
 import roomescape.theme.application.ThemeService;
-import roomescape.theme.domain.Theme;
+import roomescape.theme.application.dto.ThemeInfo;
 import roomescape.time.application.ReservationTimeService;
 import roomescape.time.application.dto.ReservationTimeInfo;
-import roomescape.time.domain.ReservationTime;
 
 @WebMvcTest(PageController.class)
 @Import(TestTimeConfig.class)
@@ -77,8 +75,8 @@ class PageControllerTest {
                 .andExpect(model().attributeExists("themes", "times", "reservations"));
     }
 
-    private Theme themeResponse() {
-        return Theme.builder()
+    private ThemeInfo themeResponse() {
+        return ThemeInfo.builder()
                 .id(1L)
                 .name("미드나잇")
                 .thumbnailImageUrl("https://example.com/theme.png")
@@ -94,20 +92,20 @@ class PageControllerTest {
                 .build();
     }
 
-    private Reservation reservationResponse() {
-        Theme theme = Theme.builder()
+    private ReservationInfo reservationResponse() {
+        ThemeInfo theme = ThemeInfo.builder()
                 .id(1L)
                 .name("미드나잇")
                 .thumbnailImageUrl("https://example.com/theme.png")
                 .description("추리 테마")
                 .durationTime(LocalTime.of(1, 30))
                 .build();
-        ReservationTime time = ReservationTime.builder()
+        ReservationTimeInfo time = ReservationTimeInfo.builder()
                 .id(1L)
                 .startAt(LocalTime.of(10, 0))
                 .build();
 
-        return Reservation.builder()
+        return ReservationInfo.builder()
                 .id(1L)
                 .name("포비")
                 .date(LocalDate.of(2026, 5, 4))

@@ -14,14 +14,13 @@ import roomescape.config.TestTimeConfig;
 import roomescape.reservation.application.ReservationService;
 import roomescape.reservation.application.dto.ReservationCreateCommand;
 import roomescape.theme.application.dto.ThemeCommand;
+import roomescape.theme.application.dto.ThemeInfo;
 import roomescape.theme.application.exception.ThemeInUseException;
-import roomescape.theme.domain.Theme;
 import roomescape.theme.domain.exception.ThemeNotFoundException;
 import roomescape.theme.presentation.dto.ThemeRequest;
 import roomescape.time.application.ReservationTimeService;
 import roomescape.time.application.dto.ReservationTimeCommand;
 import roomescape.time.application.dto.ReservationTimeInfo;
-import roomescape.time.domain.ReservationTime;
 
 @Transactional
 @SpringBootTest
@@ -64,8 +63,8 @@ class ThemeServiceTest {
                 .thumbnailImageUrl("https://~~~~")
                 .durationTime(LocalTime.now(clock))
                 .build();
-        Theme theme = themeService.addTheme(request.toCommand());
-        Assertions.assertThatCode(() -> themeService.deleteTheme(theme.getId()))
+        ThemeInfo theme = themeService.addTheme(request.toCommand());
+        Assertions.assertThatCode(() -> themeService.deleteTheme(theme.id()))
                 .doesNotThrowAnyException();
     }
 
@@ -78,7 +77,7 @@ class ThemeServiceTest {
                         .build()
         );
 
-        Theme theme = themeService.addTheme(
+        ThemeInfo theme = themeService.addTheme(
                 ThemeCommand.builder()
                         .name("판타지")
                         .description("판타지래요")
@@ -91,12 +90,12 @@ class ThemeServiceTest {
                 ReservationCreateCommand.builder()
                         .name("포비")
                         .date(LocalDate.now(clock))
-                        .themeId(theme.getId())
+                        .themeId(theme.id())
                         .timeId(time.id())
                         .build()
         );
 
-        Assertions.assertThatThrownBy(() -> themeService.deleteTheme(theme.getId()))
+        Assertions.assertThatThrownBy(() -> themeService.deleteTheme(theme.id()))
                 .isInstanceOf(ThemeInUseException.class);
     }
 }

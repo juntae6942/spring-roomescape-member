@@ -2,7 +2,7 @@ package roomescape.theme.presentation.dto;
 
 import java.time.LocalTime;
 import lombok.Builder;
-import roomescape.theme.domain.Theme;
+import roomescape.theme.application.dto.ThemeInfo;
 
 @Builder
 public record ThemeResponse(
@@ -12,13 +12,13 @@ public record ThemeResponse(
         String description,
         LocalTime durationTime
 ) {
-    public static ThemeResponse from(Theme theme) {
+    public static ThemeResponse from(ThemeInfo theme) {
         return ThemeResponse.builder()
-                .id(theme.getId())
-                .name(theme.getName())
-                .thumbnailImageUrl(theme.getThumbnailImageUrl())
-                .description(theme.getDescription())
-                .durationTime(theme.getDurationTime())
+                .id(theme.id())
+                .name(theme.name())
+                .thumbnailImageUrl(theme.thumbnailImageUrl())
+                .description(theme.description())
+                .durationTime(theme.durationTime())
                 .build();
     }
 }

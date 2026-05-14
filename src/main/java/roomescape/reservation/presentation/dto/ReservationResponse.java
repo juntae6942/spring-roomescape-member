@@ -2,7 +2,7 @@ package roomescape.reservation.presentation.dto;
 
 import java.time.LocalDate;
 import lombok.Builder;
-import roomescape.reservation.domain.Reservation;
+import roomescape.reservation.application.dto.ReservationInfo;
 import roomescape.theme.presentation.dto.ThemeResponse;
 import roomescape.time.presentation.dto.ReservationTimeResponse;
 
@@ -14,13 +14,13 @@ public record ReservationResponse(
         ReservationTimeResponse time,
         ThemeResponse theme
 ) {
-    public static ReservationResponse from(Reservation reservation) {
+    public static ReservationResponse from(ReservationInfo reservation) {
         return ReservationResponse.builder()
-                .id(reservation.getId())
-                .name(reservation.getName())
-                .date(reservation.getDate())
-                .time(ReservationTimeResponse.from(reservation.getTime()))
-                .theme(ThemeResponse.from(reservation.getTheme()))
+                .id(reservation.id())
+                .name(reservation.name())
+                .date(reservation.date())
+                .time(ReservationTimeResponse.from(reservation.time()))
+                .theme(ThemeResponse.from(reservation.theme()))
                 .build();
     }
 }

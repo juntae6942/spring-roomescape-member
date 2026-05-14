@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.reservation.application.dto.ReservationChangeCommand;
 import roomescape.reservation.application.dto.ReservationCreateCommand;
+import roomescape.reservation.application.dto.ReservationInfo;
 import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.domain.ReservationRepository;
 import roomescape.reservation.application.exception.ReservationInUseException;
@@ -30,16 +31,22 @@ public class ReservationService {
     private final ThemeRepository themeRepository;
 
     @Transactional(readOnly = true)
-    public List<Reservation> getReservations() {
-        return reservationRepository.findAll();
+    public List<ReservationInfo> getReservations() {
+        return reservationRepository.findAll()
+                .stream()
+                .map(ReservationInfo::from)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<Reservation> getReservationsByName(String username) {
-        return reservationRepository.findAllByName(username);
+    public List<ReservationInfo> getReservationsByName(String username) {
+        return reservationRepository.findAllByName(username)
+                .stream()
+                .map(ReservationInfo::from)
+                .toList();
     }
 
-    public Reservation addReservation(ReservationCreateCommand command) {
+    public ReservationInfo addReservation(ReservationCreateCommand command) {
         ReservationTime time = timeRepository.getById(command.timeId());
         time.checkValidDateTime(command.date(), clock);
         Theme theme = themeRepository.getById(command.themeId());
@@ -47,7 +54,7 @@ public class ReservationService {
             throw new ReservationInUseException("이미 예약이 존재합니다.");
         }
         try {
-            return reservationRepository.save(command.toEntity(time, theme));
+            return ReservationInfo.from(reservationRepository.save(command.toEntity(time, theme)));
         } catch (DataIntegrityViolationException e) {
             throw new ReservationInUseException("이미 예약이 존재합니다.");
         }
@@ -67,7 +74,7 @@ public class ReservationService {
         reservationRepository.cancel(cancelledReservation);
     }
 
-    public Reservation changeReservation(Long id, ReservationChangeCommand command) {
+    public ReservationInfo changeReservation(Long id, ReservationChangeCommand command) {
         Reservation reservation = reservationRepository.getById(id);
         reservation.checkChangeable(command.username(), clock);
         ReservationTime time = timeRepository.getById(command.timeId());
@@ -78,6 +85,6 @@ public class ReservationService {
         }
         Reservation changedReservation = reservation.changeTime(command.date(), time, theme);
         reservationRepository.updateById(id, changedReservation);
-        return changedReservation;
+        return ReservationInfo.from(changedReservation);
     }
 }
