@@ -14,7 +14,6 @@ import roomescape.config.TestTimeConfig;
 import roomescape.reservation.application.dto.ReservationChangeCommand;
 import roomescape.reservation.application.dto.ReservationCreateCommand;
 import roomescape.reservation.application.dto.ReservationInfo;
-import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.application.exception.ReservationInUseException;
 import roomescape.theme.application.ThemeService;
 import roomescape.theme.application.dto.ThemeCommand;

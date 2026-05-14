@@ -11,7 +11,6 @@ import roomescape.theme.application.dto.ThemeCommand;
 import roomescape.theme.application.dto.ThemeInfo;
 import roomescape.theme.application.exception.DuplicateThemeException;
 import roomescape.theme.application.exception.ThemeInUseException;
-import roomescape.theme.domain.exception.ThemeNotFoundException;
 import roomescape.theme.domain.Theme;
 import roomescape.theme.domain.ThemeRepository;
 
@@ -20,7 +19,6 @@ import roomescape.theme.domain.ThemeRepository;
 @RequiredArgsConstructor
 public class ThemeService {
 
-    private static final int DELETE_ROW_COUNTS = 0;
     private static final int WEEKS_BOUND = 1;
     private static final int DAYS_BOUND = 1;
     private static final int THEME_SIZE_LIMIT = 10;
