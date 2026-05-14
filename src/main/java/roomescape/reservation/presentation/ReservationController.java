@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import roomescape.reservation.application.ReservationService;
-import roomescape.reservation.domain.Reservation;
 import roomescape.reservation.presentation.dto.ReservationChangeRequest;
 import roomescape.reservation.presentation.dto.ReservationRequest;
 import roomescape.reservation.presentation.dto.ReservationResponse;
@@ -50,8 +49,7 @@ public class ReservationController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ReservationResponse> changeReservation(@PathVariable Long id, @Valid @RequestBody ReservationChangeRequest request) {
-        Reservation reservation = reservationService.changeReservation(id, request.toCommand());
-        ReservationResponse response = ReservationResponse.from(reservation);
+        ReservationResponse response = ReservationResponse.from(reservationService.changeReservation(id, request.toCommand()));
         return ResponseEntity.ok(response);
     }
 }

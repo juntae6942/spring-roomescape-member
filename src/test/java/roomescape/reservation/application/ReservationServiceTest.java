@@ -19,6 +19,7 @@ import roomescape.theme.application.dto.ThemeCommand;
 import roomescape.theme.domain.Theme;
 import roomescape.time.application.ReservationTimeService;
 import roomescape.time.application.dto.ReservationTimeCommand;
+import roomescape.time.application.dto.ReservationTimeInfo;
 import roomescape.time.domain.ReservationTime;
 
 @Transactional
@@ -41,7 +42,7 @@ class ReservationServiceTest {
     @Test
     @DisplayName("예약이 취소되면 다음 예약을 할 수 있다.")
     void canReservationAfterCancel() {
-        ReservationTime time = reservationTimeService.addReservationTime(ReservationTimeCommand.builder()
+        ReservationTimeInfo time = reservationTimeService.addReservationTime(ReservationTimeCommand.builder()
                 .startAt(LocalTime.now(clock))
                 .build()
         );
@@ -55,14 +56,14 @@ class ReservationServiceTest {
         Reservation reservation = reservationService.addReservation(ReservationCreateCommand.builder()
                 .name("리사")
                 .date(LocalDate.now(clock))
-                .timeId(time.getId())
+                .timeId(time.id())
                 .themeId(theme.getId())
                 .build()
         );
         Assertions.assertThatThrownBy(() -> reservationService.addReservation(ReservationCreateCommand.builder()
                         .name("워니")
                         .date(LocalDate.now(clock))
-                        .timeId(time.getId())
+                        .timeId(time.id())
                         .themeId(theme.getId())
                 .build()
         )).isInstanceOf(ReservationInUseException.class);
@@ -70,7 +71,7 @@ class ReservationServiceTest {
         Assertions.assertThatCode(() -> reservationService.addReservation(ReservationCreateCommand.builder()
                 .name("워니")
                 .date(LocalDate.now(clock))
-                .timeId(time.getId())
+                .timeId(time.id())
                 .themeId(theme.getId())
                 .build()
         )).doesNotThrowAnyException();
@@ -79,7 +80,7 @@ class ReservationServiceTest {
     @Test
     @DisplayName("자신의 ID를 시간 변경 없이 그대로 수정해도 수정된다.")
     void canChangeTest() {
-        ReservationTime time = reservationTimeService.addReservationTime(ReservationTimeCommand.builder()
+        ReservationTimeInfo time = reservationTimeService.addReservationTime(ReservationTimeCommand.builder()
                 .startAt(LocalTime.now(clock))
                 .build()
         );
@@ -93,7 +94,7 @@ class ReservationServiceTest {
         Reservation reservation = reservationService.addReservation(ReservationCreateCommand.builder()
                 .name("리사")
                 .date(LocalDate.now(clock))
-                .timeId(time.getId())
+                .timeId(time.id())
                 .themeId(theme.getId())
                 .build()
         );

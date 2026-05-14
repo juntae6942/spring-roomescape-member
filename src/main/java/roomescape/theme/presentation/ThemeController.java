@@ -1,6 +1,5 @@
 package roomescape.theme.presentation;
 
-import java.time.Clock;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

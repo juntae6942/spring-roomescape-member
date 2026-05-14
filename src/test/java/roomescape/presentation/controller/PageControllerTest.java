@@ -23,6 +23,7 @@ import roomescape.reservation.domain.Reservation;
 import roomescape.theme.application.ThemeService;
 import roomescape.theme.domain.Theme;
 import roomescape.time.application.ReservationTimeService;
+import roomescape.time.application.dto.ReservationTimeInfo;
 import roomescape.time.domain.ReservationTime;
 
 @WebMvcTest(PageController.class)
@@ -86,8 +87,8 @@ class PageControllerTest {
                 .build();
     }
 
-    private ReservationTime timeResponse() {
-        return ReservationTime.builder()
+    private ReservationTimeInfo timeResponse() {
+        return ReservationTimeInfo.builder()
                 .id(1L)
                 .startAt(LocalTime.of(10, 0))
                 .build();

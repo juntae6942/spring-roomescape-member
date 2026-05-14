@@ -14,6 +14,7 @@ import roomescape.theme.domain.ThemeRepository;
 import roomescape.time.application.dto.AvailableReservationTimeFindCommand;
 import roomescape.time.application.dto.AvailableReservationTimeInfo;
 import roomescape.time.application.dto.ReservationTimeCommand;
+import roomescape.time.application.dto.ReservationTimeInfo;
 import roomescape.time.application.exception.DuplicateReservationTimeException;
 import roomescape.time.domain.ReservationTime;
 import roomescape.time.application.exception.ReservationTimeInUseException;
@@ -30,15 +31,19 @@ public class ReservationTimeService {
     private final ThemeRepository themeRepository;
 
     @Transactional(readOnly = true)
-    public List<ReservationTime> getReservationTimes() {
-        return reservationTimeRepository.findAll();
+    public List<ReservationTimeInfo> getReservationTimes() {
+        return reservationTimeRepository.findAll()
+                .stream()
+                .map(ReservationTimeInfo::from)
+                .toList();
     }
 
-    public ReservationTime addReservationTime(ReservationTimeCommand time) {
-        if (reservationTimeRepository.existsByStartAt(time.startAt())) {
+    public ReservationTimeInfo addReservationTime(ReservationTimeCommand timeCommand) {
+        if (reservationTimeRepository.existsByStartAt(timeCommand.startAt())) {
             throw new DuplicateReservationTimeException("이미 존재하는 시간입니다.");
         }
-        return reservationTimeRepository.save(time.toEntity());
+        ReservationTime time = reservationTimeRepository.save(timeCommand.toEntity());
+        return ReservationTimeInfo.from(time);
     }
 
     public void deleteReservationTime(Long id) {

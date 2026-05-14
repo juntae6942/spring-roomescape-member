@@ -17,6 +17,7 @@ import roomescape.reservation.domain.Reservation;
 import roomescape.theme.application.ThemeService;
 import roomescape.theme.domain.Theme;
 import roomescape.theme.presentation.dto.ThemeRequest;
+import roomescape.time.application.dto.ReservationTimeInfo;
 import roomescape.time.domain.ReservationTime;
 import roomescape.time.presentation.dto.AvailableReservationTimeRequest;
 import roomescape.time.presentation.dto.ReservationTimeRequest;
@@ -48,10 +49,10 @@ class ReservationTimeServiceTest {
                 .durationTime(LocalTime.now(clock))
                 .build();
         Theme savedTheme = themeService.addTheme(theme.toCommand());
-        ReservationTime time = timeService.addReservationTime(new ReservationTimeRequest(LocalTime.now(clock)).toCommand());
+        ReservationTimeInfo time = timeService.addReservationTime(new ReservationTimeRequest(LocalTime.now(clock)).toCommand());
         timeService.addReservationTime(new ReservationTimeRequest(LocalTime.now(clock).plusHours(1)).toCommand());
         timeService.addReservationTime(new ReservationTimeRequest(LocalTime.now(clock).plusHours(2)).toCommand());
-        reservationService.addReservation(new ReservationCreateCommand("포비", LocalDate.now(clock), time.getId(), savedTheme.getId()));
+        reservationService.addReservation(new ReservationCreateCommand("포비", LocalDate.now(clock), time.id(), savedTheme.getId()));
         AvailableReservationTimeRequest availableReservationTimeRequest = new AvailableReservationTimeRequest(
                 savedTheme.getId(), LocalDate.now(clock));
         Assertions.assertThat(timeService.getAvailableReservationTime(availableReservationTimeRequest.toCommand())
@@ -69,17 +70,17 @@ class ReservationTimeServiceTest {
                 .durationTime(LocalTime.now(clock))
                 .build();
         Theme savedTheme = themeService.addTheme(theme.toCommand());
-        ReservationTime time1 = timeService.addReservationTime(
+        ReservationTimeInfo time1 = timeService.addReservationTime(
                 new ReservationTimeRequest(LocalTime.now(clock)).toCommand());
-        ReservationTime time2 = timeService.addReservationTime(
+        ReservationTimeInfo time2 = timeService.addReservationTime(
                 new ReservationTimeRequest(LocalTime.now(clock).plusHours(1)).toCommand());
         timeService.addReservationTime(
                 new ReservationTimeRequest(LocalTime.now(clock).plusHours(2)).toCommand());
 
         Reservation reservation = reservationService.addReservation(
-                new ReservationCreateCommand("포비", LocalDate.now(clock), time1.getId(), savedTheme.getId()));
+                new ReservationCreateCommand("포비", LocalDate.now(clock), time1.id(), savedTheme.getId()));
         reservationService.addReservation(
-                new ReservationCreateCommand("리사", LocalDate.now(clock), time2.getId(), savedTheme.getId()));
+                new ReservationCreateCommand("리사", LocalDate.now(clock), time2.id(), savedTheme.getId()));
         reservationService.cancelReservation(reservation.getId(), reservation.getName());
         AvailableReservationTimeRequest availableReservationTimeRequest = new AvailableReservationTimeRequest(
                 savedTheme.getId(), LocalDate.now(clock));
@@ -99,19 +100,19 @@ class ReservationTimeServiceTest {
                 .durationTime(LocalTime.now(clock))
                 .build();
         Theme savedTheme = themeService.addTheme(theme.toCommand());
-        ReservationTime time1 = timeService.addReservationTime(
+        ReservationTimeInfo time1 = timeService.addReservationTime(
                 new ReservationTimeRequest(LocalTime.now(clock)).toCommand());
-        ReservationTime time2 = timeService.addReservationTime(
+        ReservationTimeInfo time2 = timeService.addReservationTime(
                 new ReservationTimeRequest(LocalTime.now(clock).plusHours(1)).toCommand());
-        ReservationTime time3 = timeService.addReservationTime(
+        ReservationTimeInfo time3 = timeService.addReservationTime(
                 new ReservationTimeRequest(LocalTime.now(clock).plusHours(2)).toCommand());
 
         Reservation reservation1 = reservationService.addReservation(
-                new ReservationCreateCommand("포비", LocalDate.now(clock), time1.getId(), savedTheme.getId()));
+                new ReservationCreateCommand("포비", LocalDate.now(clock), time1.id(), savedTheme.getId()));
         Reservation reservation2 = reservationService.addReservation(
-                new ReservationCreateCommand("리사", LocalDate.now(clock), time2.getId(), savedTheme.getId()));
+                new ReservationCreateCommand("리사", LocalDate.now(clock), time2.id(), savedTheme.getId()));
         Reservation reservation3 = reservationService.addReservation(
-                new ReservationCreateCommand("워니", LocalDate.now(clock), time3.getId(), savedTheme.getId()));
+                new ReservationCreateCommand("워니", LocalDate.now(clock), time3.id(), savedTheme.getId()));
 
         reservationService.cancelReservation(reservation1.getId(), reservation1.getName());
         AvailableReservationTimeRequest availableReservationTimeRequest = new AvailableReservationTimeRequest(
