@@ -1,4 +1,4 @@
-package roomescape.presentation.controller;
+package roomescape.presentation;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import roomescape.config.TestTimeConfig;
-import roomescape.presentation.PageController;
 import roomescape.reservation.application.ReservationService;
 import roomescape.reservation.application.dto.ReservationInfo;
 import roomescape.theme.application.ThemeService;
