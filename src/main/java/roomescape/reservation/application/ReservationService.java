@@ -70,8 +70,8 @@ public class ReservationService {
         if (!reservationRepository.existsByIdAndUsernameAndActive(id, username)) {
             throw new ReservationNotFoundException("해당 예약을 찾을 수 없거나 취소할 권한이 없습니다.");
         }
-        Reservation cancelledReservation = reservationRepository.getById(id).cancel(clock);
-        reservationRepository.cancel(cancelledReservation);
+        Reservation canceledReservation = reservationRepository.getById(id).cancel(clock);
+        reservationRepository.cancel(canceledReservation);
     }
 
     public ReservationInfo changeReservation(Long id, ReservationChangeCommand command) {
