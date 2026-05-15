@@ -14,6 +14,7 @@ CREATE TABLE reservation_time (
                                   deleted_at TIMESTAMP,
                                   PRIMARY KEY (id)
 );
+
 CREATE TABLE reservation (
                              id      BIGINT       NOT NULL AUTO_INCREMENT,
                              name    VARCHAR(255) NOT NULL,
@@ -21,7 +22,7 @@ CREATE TABLE reservation (
                              time_id BIGINT,
                              theme_id BIGINT,
                              status  VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
-                             deleted_at TIMESTAMP,
+                             deleted_at BIGINT DEFAULT 0,
                              PRIMARY KEY (id),
                              FOREIGN KEY (time_id) REFERENCES reservation_time (id),
                              FOREIGN KEY (theme_id) REFERENCES theme (id)
