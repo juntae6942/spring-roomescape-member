@@ -70,7 +70,7 @@ public class JdbcThemeRepository implements ThemeRepository {
         String sql = "SELECT t.id, t.name, t.description, t.thumbnail_image_url, t.duration_time "
                 + "FROM theme t "
                 + "INNER JOIN reservation r ON t.id = r.theme_id "
-                + "WHERE r.date BETWEEN :startDate AND :endDate AND t.deleted_at IS NULL AND r.deleted_at = 0 "
+                + "WHERE r.date BETWEEN :startDate AND :endDate AND t.deleted_at IS NULL AND r.is_deleted = 0 "
                 + "GROUP BY t.id, t.name, t.description, t.thumbnail_image_url, t.duration_time "
                 + "ORDER BY COUNT(r.id) DESC "
                 + "LIMIT :limit";
