@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import roomescape.reservation.domain.exception.IllegalReservationDateTimeException;
 import roomescape.reservation.domain.exception.IllegalStateReservationException;
 import roomescape.reservation.domain.exception.UnauthorizedReservationChangeException;
+import roomescape.theme.domain.Theme;
 import roomescape.time.domain.ReservationTime;
 
 @SpringBootTest
@@ -30,7 +31,13 @@ class ReservationTest {
                 .date(LocalDate.now(clock))
                 .time(time)
                 .build();
-        Assertions.assertThatCode(() -> reservation.checkChangeable("포비", clock))
+        Theme theme = Theme.builder()
+                .name("판타지")
+                .description("판타지래요")
+                .durationTime(LocalTime.now(clock))
+                .thumbnailImageUrl("https://~~~")
+                .build();
+        Assertions.assertThatCode(() -> reservation.changeTime("포비", LocalDate.now(clock), time, theme, clock))
                 .doesNotThrowAnyException();
     }
 
@@ -45,7 +52,13 @@ class ReservationTest {
                 .date(LocalDate.now(clock))
                 .time(time)
                 .build();
-        Assertions.assertThatThrownBy(() -> reservation.checkChangeable("리사", clock))
+        Theme theme = Theme.builder()
+                .name("판타지")
+                .description("판타지래요")
+                .durationTime(LocalTime.now(clock))
+                .thumbnailImageUrl("https://~~~")
+                .build();
+        Assertions.assertThatThrownBy(() -> reservation.changeTime("리산", LocalDate.now(clock), time, theme, clock))
                 .isInstanceOf(UnauthorizedReservationChangeException.class);
     }
 
@@ -61,7 +74,13 @@ class ReservationTest {
                 .time(time)
                 .status(Status.CANCELED)
                 .build();
-        Assertions.assertThatThrownBy(() -> reservation.checkChangeable("포비", clock))
+        Theme theme = Theme.builder()
+                .name("판타지")
+                .description("판타지래요")
+                .durationTime(LocalTime.now(clock))
+                .thumbnailImageUrl("https://~~~")
+                .build();
+        Assertions.assertThatThrownBy(() -> reservation.changeTime("포비", LocalDate.now(clock), time, theme, clock))
                 .isInstanceOf(IllegalStateReservationException.class);
     }
 
@@ -76,7 +95,13 @@ class ReservationTest {
                 .date(LocalDate.now(clock).minusDays(1))
                 .time(time)
                 .build();
-        Assertions.assertThatThrownBy(() -> reservation.checkChangeable("포비", clock))
+        Theme theme = Theme.builder()
+                .name("판타지")
+                .description("판타지래요")
+                .durationTime(LocalTime.now(clock))
+                .thumbnailImageUrl("https://~~~")
+                .build();
+        Assertions.assertThatThrownBy(() -> reservation.changeTime("포비", LocalDate.now(clock), time, theme, clock))
                 .isInstanceOf(IllegalReservationDateTimeException.class);
     }
 }
