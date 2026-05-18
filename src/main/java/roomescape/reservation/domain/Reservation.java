@@ -25,7 +25,7 @@ public class Reservation {
     private ReservationTime time;
     private Theme theme;
     private Status status;
-    private LocalDateTime deletedAt;
+    private Long is_deleted;
 
     public Reservation withId(Long id) {
         return Reservation.builder()
@@ -35,10 +35,11 @@ public class Reservation {
                 .time(this.time)
                 .theme(this.theme)
                 .status(Status.ACTIVE)
+                .is_deleted(0L)
                 .build();
     }
 
-    public void checkChangeable(String username, Clock clock) {
+    private void checkChangeable(String username, Clock clock) {
         if (!this.name.equals(username)) {
             throw new UnauthorizedReservationChangeException("예약 변경 권한이 없습니다.");
         }
@@ -50,7 +51,9 @@ public class Reservation {
         }
     }
 
-    public Reservation changeTime(LocalDate date, ReservationTime time, Theme theme) {
+    public Reservation changeTime(String username, LocalDate date, ReservationTime time, Theme theme, Clock clock) {
+        checkChangeable(username, clock);
+        time.checkValidDateTime(date, clock);
         return Reservation.builder()
                 .id(id)
                 .name(this.name)
@@ -58,10 +61,11 @@ public class Reservation {
                 .time(time)
                 .theme(theme)
                 .status(Status.ACTIVE)
+                .is_deleted(0L)
                 .build();
     }
 
-    public Reservation cancel(Clock clock) {
+    public Reservation cancel() {
         return Reservation.builder()
                 .id(id)
                 .name(name)
@@ -69,7 +73,7 @@ public class Reservation {
                 .time(time)
                 .theme(theme)
                 .status(Status.CANCELED)
-                .deletedAt(LocalDateTime.now(clock))
+                .is_deleted(id)
                 .build();
     }
 }
