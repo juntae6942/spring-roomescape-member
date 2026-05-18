@@ -70,20 +70,18 @@ public class ReservationService {
         if (!reservationRepository.existsByIdAndUsernameAndActive(id, username)) {
             throw new ReservationNotFoundException("해당 예약을 찾을 수 없거나 취소할 권한이 없습니다.");
         }
-        Reservation canceledReservation = reservationRepository.getById(id).cancel(clock);
+        Reservation canceledReservation = reservationRepository.getById(id).cancel();
         reservationRepository.cancel(canceledReservation);
     }
 
     public ReservationInfo changeReservation(Long id, ReservationChangeCommand command) {
         Reservation reservation = reservationRepository.getById(id);
-        reservation.checkChangeable(command.username(), clock);
         ReservationTime time = timeRepository.getById(command.timeId());
-        time.checkValidDateTime(command.date(), clock);
         Theme theme = themeRepository.getById(command.themeId());
         if (reservationRepository.existsByReservationTimeAndThemeAndDateAndIdNot(id, time.getId(), theme.getId(), command.date())) {
             throw new ReservationInUseException("이미 다른 예약이 존재합니다.");
         }
-        Reservation changedReservation = reservation.changeTime(command.date(), time, theme);
+        Reservation changedReservation = reservation.changeTime(command.username(), command.date(), time, theme, clock);
         reservationRepository.updateById(id, changedReservation);
         return ReservationInfo.from(changedReservation);
     }
