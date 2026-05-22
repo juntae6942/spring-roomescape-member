@@ -27,7 +27,7 @@ public class Reservation {
     private Status status;
     private Long is_deleted;
 
-    public Reservation withId(Long id) {
+    public Reservation withId(final Long id) {
         return Reservation.builder()
                 .id(id)
                 .name(this.name)
@@ -39,7 +39,7 @@ public class Reservation {
                 .build();
     }
 
-    private void checkChangeable(String username, Clock clock) {
+    private void checkChangeable(final String username, final Clock clock) {
         if (!this.name.equals(username)) {
             throw new UnauthorizedReservationChangeException("예약 변경 권한이 없습니다.");
         }
@@ -51,7 +51,7 @@ public class Reservation {
         }
     }
 
-    public Reservation changeTime(String username, LocalDate date, ReservationTime time, Theme theme, Clock clock) {
+    public Reservation changeTime(final String username, final LocalDate date, final ReservationTime time, final Theme theme, final Clock clock) {
         checkChangeable(username, clock);
         time.checkValidDateTime(date, clock);
         return Reservation.builder()

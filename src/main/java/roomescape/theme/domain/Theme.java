@@ -23,7 +23,7 @@ public class Theme {
     private LocalTime durationTime;
     private LocalDateTime deletedAt;
 
-    public Theme withId(Long id) {
+    public Theme withId(final Long id) {
         return Theme.builder()
                 .id(id)
                 .name(this.name)
@@ -33,7 +33,7 @@ public class Theme {
                 .build();
     }
 
-    public Theme delete(Clock clock) {
+    public Theme delete(final Clock clock) {
         return Theme.builder()
                 .id(id)
                 .name(name)
