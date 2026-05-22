@@ -14,7 +14,7 @@ public record ReservationCreateCommand(
         Long timeId,
         Long themeId
 ) {
-    public Reservation toEntity(ReservationTime time, Theme theme) {
+    public Reservation toEntity(final ReservationTime time, final Theme theme) {
         return Reservation.builder()
                 .name(this.name)
                 .date(this.date)

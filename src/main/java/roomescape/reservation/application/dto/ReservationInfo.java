@@ -14,7 +14,7 @@ public record ReservationInfo(
         ReservationTimeInfo time,
         ThemeInfo theme
 ) {
-    public static ReservationInfo from(Reservation reservation) {
+    public static ReservationInfo from(final Reservation reservation) {
         return ReservationInfo.builder()
                 .id(reservation.getId())
                 .name(reservation.getName())
